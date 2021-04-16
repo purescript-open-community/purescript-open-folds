@@ -45,21 +45,23 @@ module Control.Fold
   ) where
 
 import Prelude
-import Data.Foldable as Foldable
-import Data.Traversable as Traversable
+
 import Control.Alt ((<|>))
 import Control.Apply (lift2)
 import Control.Comonad (class Comonad, extract)
 import Control.Extend (class Extend)
 import Data.Distributive (class Distributive, cotraverse)
 import Data.Foldable (class Foldable)
+import Data.Foldable as Foldable
 import Data.Function (applyFlipped)
 import Data.HeytingAlgebra (ff, tt)
-import Data.Map (Map, alter)
+import Data.Map (SemigroupMap(..), alter)
 import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Newtype (unwrap)
 import Data.Profunctor (class Profunctor, dimap, lcmap)
 import Data.Profunctor.Closed (class Closed, closed)
 import Data.Traversable (class Traversable)
+import Data.Traversable as Traversable
 
 -- | A left fold, which takes zero or more values of type `a` as input
 -- | and produces output of type `b`.
@@ -170,10 +172,11 @@ notElem a = all (_ /= a)
 -- | Perform a `Fold` while grouping the data according to a specified
 -- | group projection function. Returns the folded result grouped as a
 -- | map keyed by the group.
-groupBy :: forall a r g . Ord g => (a -> g) -> Fold a r -> Fold a (Map g r)
-groupBy grouper f1 = unfoldFold mempty combine (map extract)
+groupBy :: forall a r g . Semigroup r => Ord g => (a -> g) -> Fold a r -> Fold a (SemigroupMap g r)
+groupBy grouper f1 = unfoldFold (mempty :: SemigroupMap g (Fold a r)) combine (map extract)
   where
-    combine m x = alter (pure <<< stepFold x <<< fromMaybe f1) (grouper x) m
+        combine :: SemigroupMap g (Fold a r) -> a -> SemigroupMap g (Fold a r)
+        combine m x = SemigroupMap $ alter (pure <<< stepFold x <<< fromMaybe f1) (grouper x) (unwrap m)
 
 -- | `(prefilter pred f)` returns a new Fold based on `f` but where
 -- | inputs will only be included if they satisfy a predicate `pred`.
