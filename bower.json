@@ -14,21 +14,16 @@
         "output"
     ],
     "dependencies": {
-        "purescript-bifunctors": "^v5.0.0",
         "purescript-console": "^v5.0.0",
         "purescript-control": "^v5.0.0",
         "purescript-distributive": "^v5.0.0",
         "purescript-effect": "^v3.0.0",
-        "purescript-either": "^v5.0.0",
         "purescript-foldable-traversable": "^v5.0.0",
-        "purescript-identity": "^v5.0.0",
-        "purescript-invariant": "^v5.0.0",
         "purescript-maybe": "^v5.0.0",
         "purescript-newtype": "^v4.0.0",
         "purescript-ordered-collections": "^v2.0.0",
         "purescript-prelude": "^v5.0.0",
         "purescript-profunctor": "^v5.0.0",
-        "purescript-psci-support": "^v5.0.0",
-        "purescript-tuples": "^v6.0.0"
+        "purescript-psci-support": "^v5.0.0"
     }
 }
