@@ -1,21 +1,16 @@
 { name = "open-folds"
 , dependencies =
-  [ "bifunctors"
-  , "console"
+  [ "console"
   , "control"
   , "distributive"
   , "effect"
-  , "either"
   , "foldable-traversable"
-  , "identity"
-  , "invariant"
   , "maybe"
   , "newtype"
   , "ordered-collections"
   , "prelude"
   , "profunctor"
   , "psci-support"
-  , "tuples"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
