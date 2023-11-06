@@ -16,7 +16,7 @@ finalAverage = foldl average [1.0, 2.0, 3.0] :: Number
 movingAverage = scanl average [1.0, 2.0, 3.0] :: Array Number
 ```
 
-This library is based on the `foldl` library by Gabriel Gonzalez:
+This library is based on the `foldl` library by Gabriella Gonzalez:
 <http://hackage.haskell.org/package/foldl>
 
 #### `Fold`
