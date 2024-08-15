@@ -1,6 +1,6 @@
 package:
   publish:
-    version: 6.3.0
+    version: 6.4.0
     license: "MIT"
     location:
       githubOwner: purescript-open-community
