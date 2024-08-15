@@ -224,4 +224,23 @@ distributed :: forall f a b. Distributive f => Fold a b -> Fold (f a) (f b)
 
 Fold over entire collections of inputs, producing a collection of outputs.
 
+#### `groupBy`
+
+``` purescript
+groupBy :: forall a r g. Semigroup r => Ord g => (a -> g) -> Fold a r -> Fold a (SemigroupMap g r)
+```
+
+Perform a `Fold` while grouping the data according to a specified
+group projection function. Returns the folded result grouped as a
+map keyed by the group.
+
+#### `prefilter`
+
+``` purescript
+prefilter :: forall a b. (a -> Boolean) -> Fold a b -> Fold a b
+```
+
+`(prefilter pred f)` returns a new Fold based on `f` but where
+inputs will only be included if they satisfy a predicate `pred`.
+
 

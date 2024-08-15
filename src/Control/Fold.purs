@@ -76,8 +76,8 @@ stepFold a (Fold o) = o.step a
 unfoldFold :: forall s a b. s -> (s -> a -> s) -> (s -> b) -> Fold a b
 unfoldFold s0 step finish = go s0
   where
-    go :: s -> Fold a b
-    go s = Fold { step: go <<< step s, finish: \_ -> finish s }
+  go :: s -> Fold a b
+  go s = Fold { step: go <<< step s, finish: \_ -> finish s }
 
 -- | Create a `Fold` by providing an initial state and a function which updates
 -- | that state. This is a variant of `unfoldFold` where the output is the state
@@ -172,23 +172,24 @@ notElem a = all (_ /= a)
 -- | Perform a `Fold` while grouping the data according to a specified
 -- | group projection function. Returns the folded result grouped as a
 -- | map keyed by the group.
-groupBy :: forall a r g . Semigroup r => Ord g => (a -> g) -> Fold a r -> Fold a (SemigroupMap g r)
+groupBy :: forall a r g. Semigroup r => Ord g => (a -> g) -> Fold a r -> Fold a (SemigroupMap g r)
 groupBy grouper f1 = unfoldFold (mempty :: SemigroupMap g (Fold a r)) combine (map extract)
   where
-        combine :: SemigroupMap g (Fold a r) -> a -> SemigroupMap g (Fold a r)
-        combine m x = SemigroupMap $ alter (pure <<< stepFold x <<< fromMaybe f1) (grouper x) (unwrap m)
+  combine :: SemigroupMap g (Fold a r) -> a -> SemigroupMap g (Fold a r)
+  combine m x = SemigroupMap $ alter (pure <<< stepFold x <<< fromMaybe f1) (grouper x) (unwrap m)
 
 -- | `(prefilter pred f)` returns a new Fold based on `f` but where
 -- | inputs will only be included if they satisfy a predicate `pred`.
-prefilter :: forall a b . (a -> Boolean) -> Fold a b -> Fold a b
+prefilter :: forall a b. (a -> Boolean) -> Fold a b -> Fold a b
 prefilter pred f = unfoldFold f maybeStep extract
-  where maybeStep s v = if pred v then stepFold v s else s
+  where
+  maybeStep s v = if pred v then stepFold v s else s
 
 instance profunctorFold :: Profunctor Fold where
   dimap f g (Fold o) = Fold { step, finish }
     where
-      step = f >>> o.step >>> dimap f g
-      finish = o.finish >>> g
+    step = f >>> o.step >>> dimap f g
+    finish = o.finish >>> g
 
 instance closedFold :: Closed Fold where
   closed f = unfoldFold (const f) (lift2 (flip stepFold)) (extract <<< _)
@@ -196,27 +197,27 @@ instance closedFold :: Closed Fold where
 instance functorFold :: Functor (Fold a) where
   map f (Fold o) = Fold { step, finish }
     where
-      step = o.step >>> map f
-      finish = o.finish >>> f
+    step = o.step >>> map f
+    finish = o.finish >>> f
 
 instance applyFold :: Apply (Fold a) where
   apply (Fold f) (Fold x) = Fold { step, finish }
     where
-      step a = apply (f.step a) (x.step a)
-      finish u = (f.finish u) (x.finish u)
+    step a = apply (f.step a) (x.step a)
+    finish u = (f.finish u) (x.finish u)
 
 instance applicativeFold :: Applicative (Fold a) where
   pure b = done
     where
-      done = Fold { step: \_ -> done, finish: \_ -> b }
+    done = Fold { step: \_ -> done, finish: \_ -> b }
 
 instance extendFold :: Extend (Fold a) where
   extend f = map f <<< dup
     where
-      dup fold@(Fold o) = Fold { step, finish }
-        where
-          step a = dup (o.step a)
-          finish _ = fold
+    dup fold@(Fold o) = Fold { step, finish }
+      where
+      step a = dup (o.step a)
+      finish _ = fold
 
 instance comonadFold :: Comonad (Fold a) where
   extract (Fold o) = o.finish unit
