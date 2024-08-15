@@ -4,3 +4,7 @@ output/
 .psc-package
 .psc-ide-port
 .purs-repl
+
+generated-docs/html/*
+generated-docs/md/*
+!generated-docs/md/Control.Fold.md
